@@ -3,6 +3,8 @@ package com.dropwizard;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class MinesweeperApplication extends Application<MinesweeperConfiguration> {
 
@@ -17,7 +19,12 @@ public class MinesweeperApplication extends Application<MinesweeperConfiguration
 
     @Override
     public void initialize(final Bootstrap<MinesweeperConfiguration> bootstrap) {
-        // TODO: application initialization
+        bootstrap.addBundle(new SwaggerBundle<MinesweeperConfiguration>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(final MinesweeperConfiguration minesweeperConfiguration) {
+                return minesweeperConfiguration.getSwaggerBundleConfiguration();
+            }
+        });
     }
 
     @Override

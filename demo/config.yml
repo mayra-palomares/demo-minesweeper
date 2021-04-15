@@ -2,3 +2,14 @@ logging:
   level: INFO
   loggers:
     com.dropwizard: DEBUG
+
+swagger:
+  resourcePackage: com.dropwizard.resources
+  scan: true
+  info:
+    version: "1.0.0"
+    title: "Minesweeper API"
+    description: "Minesweeper"
+    termsOfService: "http://swagger.io/terms/"
+    contact:
+      name: "Mayra Palomares"

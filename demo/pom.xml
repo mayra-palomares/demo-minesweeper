@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>2.0.21</dropwizard.version>
+        <swagger.version>2.0.12-1</swagger.version>
         <mainClass>com.dropwizard.MinesweeperApplication</mainClass>
     </properties>
 
@@ -48,6 +49,11 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.smoketurner</groupId>
+            <artifactId>dropwizard-swagger</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
     </dependencies>
 
