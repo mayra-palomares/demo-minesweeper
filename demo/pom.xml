@@ -18,6 +18,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>2.0.21</dropwizard.version>
         <swagger.version>2.0.12-1</swagger.version>
+        <mongodb.version>4.2.3</mongodb.version>
         <mainClass>com.dropwizard.MinesweeperApplication</mainClass>
     </properties>
 
@@ -54,6 +55,11 @@
             <groupId>com.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
             <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongodb.version}</version>
         </dependency>
     </dependencies>
 
