@@ -3,6 +3,9 @@ logging:
   loggers:
     com.dropwizard: DEBUG
 
+mongoServer:
+  uri: mongodb+srv://admin:vNQbwiBXdYj6nDZi@cluster0.lohj3.mongodb.net/minesweeper
+  database: minesweeper
 swagger:
   resourcePackage: com.dropwizard.resources
   scan: true
