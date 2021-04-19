@@ -20,6 +20,7 @@
         <swagger.version>2.0.12-1</swagger.version>
         <mongodb.version>4.2.3</mongodb.version>
         <jodatime.version>2.10.10</jodatime.version>
+        <guice.version>5.3.0</guice.version>
         <mainClass>com.dropwizard.MinesweeperApplication</mainClass>
     </properties>
 
@@ -66,6 +67,11 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${jodatime.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.vyarus</groupId>
+            <artifactId>dropwizard-guicey</artifactId>
+            <version>${guice.version}</version>
         </dependency>
     </dependencies>
 

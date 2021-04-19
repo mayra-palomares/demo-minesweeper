@@ -5,6 +5,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import ru.vyarus.dropwizard.guice.GuiceBundle;
 
 public class MinesweeperApplication extends Application<MinesweeperConfiguration> {
 
@@ -25,12 +26,16 @@ public class MinesweeperApplication extends Application<MinesweeperConfiguration
                 return minesweeperConfiguration.getSwaggerBundleConfiguration();
             }
         });
+
+        bootstrap.addBundle(GuiceBundle.builder()
+                .modules(new MinesweeperModule())
+                .enableAutoConfig(getClass().getPackage().getName())
+                .build());
     }
 
     @Override
     public void run(final MinesweeperConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
     }
 
 }

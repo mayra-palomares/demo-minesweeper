@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import java.io.Serializable;
 
 public abstract class BaseModel implements Serializable {
-    private ObjectId id;
+    private String id;
     private Long created;
     private Long modified;
     private boolean updated;
@@ -20,7 +20,7 @@ public abstract class BaseModel implements Serializable {
 
     public void prepare() {
         if(getId() == null) {
-            setId(ObjectId.get());
+            setId(ObjectId.get().toString());
             this.setCreated(DateTime.now().getMillis());
             this.setModified(DateTime.now().getMillis());
             this.setDeleted(false);
@@ -30,11 +30,11 @@ public abstract class BaseModel implements Serializable {
         }
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
