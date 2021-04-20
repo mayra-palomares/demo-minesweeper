@@ -29,5 +29,8 @@ public class MinesweeperModule extends DropwizardAwareModule<MinesweeperConfigur
 
         //Services
         bind(UserService.class).to(UserServiceImpl.class);
+        bind(GameHistoryService.class).to(GameHistoryServiceImpl.class);
+        bind(GameService.class).to(GameServiceImpl.class);
+        bind(BoardService.class).to(BoardServiceImpl.class);
     }
 }
