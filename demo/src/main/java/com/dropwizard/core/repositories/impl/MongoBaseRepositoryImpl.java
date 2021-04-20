@@ -20,13 +20,14 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
 
     @Inject
     public MongoBaseRepositoryImpl(String collectionName, MongoDBManaged mongoDBManaged, BaseMapper<T> mapper) {
-        this.collection = mongoDBManaged.getCollectionByName(collectionName);
+        this.setCollection(mongoDBManaged.getCollectionByName(collectionName));
         this.mapper = mapper;
     }
 
     @Override
     public List<T> list() {
-        final MongoCursor<Document> documents = collection.find().iterator();
+        Document query = new Document("deleted", false);
+        final MongoCursor<Document> documents = getCollection().find(query).iterator();
         final List<T> entities = new ArrayList<>();
 
         try {
@@ -43,14 +44,14 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
     @Override
     public T getById(String entityId) {
         Document query = new Document("_id", new ObjectId(entityId));
-        Optional<Document> document = Optional.ofNullable(collection.find(query).first());
+        Optional<Document> document = Optional.ofNullable(getCollection().find(query).first());
         return document.isPresent() ? mapper.map(document.get()) : null;
     }
 
     @Override
     public T save(T entity) {
         Document newDocument = mapper.map(entity);
-        collection.insertOne(newDocument);
+        getCollection().insertOne(newDocument);
         return getDocument(newDocument);
     }
 
@@ -58,12 +59,12 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
     public T update(String entityId, T entity) {
         Document updatedDocument = mapper.map(entity);
         Document query = new Document("_id", new ObjectId(entityId));
-        collection.updateOne(query, new Document("$set", updatedDocument));
+        getCollection().updateOne(query, new Document("$set", updatedDocument));
         return getDocument(updatedDocument);
     }
 
     private T getDocument(Document document) {
-        Optional<Document> documentFind = Optional.ofNullable(collection.find(document).first());
+        Optional<Document> documentFind = Optional.ofNullable(getCollection().find(document).first());
         return documentFind.isPresent() ? mapper.map(documentFind.get()) : null;
     }
 
@@ -74,7 +75,15 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
             entity.setDeleted(true);
             Document updatedDocument = mapper.map(entity);
             Document query = new Document("_id", new ObjectId(entityId));
-            collection.updateOne(query, new Document("$set", updatedDocument));
+            getCollection().updateOne(query, new Document("$set", updatedDocument));
         }
+    }
+
+    public MongoCollection<Document> getCollection() {
+        return collection;
+    }
+
+    public void setCollection(MongoCollection<Document> collection) {
+        this.collection = collection;
     }
 }
