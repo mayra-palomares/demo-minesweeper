@@ -1,10 +1,10 @@
 package com.dropwizard;
 
-import com.dropwizard.core.mapper.UserMapper;
-import com.dropwizard.core.repositories.UserRepository;
-import com.dropwizard.core.repositories.impl.UserRepositoryImpl;
-import com.dropwizard.core.services.UserService;
-import com.dropwizard.core.services.impl.UserServiceImpl;
+import com.dropwizard.core.mapper.*;
+import com.dropwizard.core.repositories.*;
+import com.dropwizard.core.repositories.impl.*;
+import com.dropwizard.core.services.*;
+import com.dropwizard.core.services.impl.*;
 import com.dropwizard.db.MongoDBManaged;
 import com.dropwizard.db.configuration.MongoDBFactoryConnection;
 import ru.vyarus.dropwizard.guice.module.support.DropwizardAwareModule;
@@ -20,9 +20,12 @@ public class MinesweeperModule extends DropwizardAwareModule<MinesweeperConfigur
 
         //Mappers
         bind(UserMapper.class);
+        bind(GameHistoryMapper.class);
+        bind(GameMapper.class);
 
         //Repositories
         bind(UserRepository.class).to(UserRepositoryImpl.class);
+        bind(GameHistoryRepository.class).to(GameHistoryRepositoryImpl.class);
 
         //Services
         bind(UserService.class).to(UserServiceImpl.class);
