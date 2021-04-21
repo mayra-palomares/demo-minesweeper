@@ -1,0 +1,1 @@
+web: java -jar demo/target/demo-1.0-SNAPSHOT.jar server demo/config.yml
