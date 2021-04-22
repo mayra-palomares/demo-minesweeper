@@ -1,10 +1,12 @@
 package com.dropwizard.resources;
 
+import com.dropwizard.api.requests.UserAddRequest;
 import com.dropwizard.core.models.User;
 import com.dropwizard.core.services.UserService;
 import io.swagger.annotations.Api;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -33,7 +35,7 @@ public class UserResource {
     }
 
     @POST
-    public User addUser(User user) {
+    public User addUser(@Valid UserAddRequest user) throws Exception {
         return userService.addUser(user);
     }
 

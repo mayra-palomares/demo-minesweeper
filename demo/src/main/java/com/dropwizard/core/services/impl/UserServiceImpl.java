@@ -1,5 +1,6 @@
 package com.dropwizard.core.services.impl;
 
+import com.dropwizard.api.requests.UserAddRequest;
 import com.dropwizard.core.models.User;
 import com.dropwizard.core.repositories.UserRepository;
 import com.dropwizard.core.services.UserService;
@@ -27,8 +28,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addUser(User user) {
+    public User addUser(UserAddRequest userRequest) throws Exception {
+
+        if(userRequest.getUsername() == null){
+            throw new Exception("Invalid Username");
+        }
+
+        User user = new User();
         user.prepare();
+        user.setUsername(userRequest.getUsername());
         return userRepository.save(user);
     }
 
