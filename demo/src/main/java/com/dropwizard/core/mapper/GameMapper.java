@@ -32,8 +32,12 @@ public class GameMapper implements BaseMapper<Game>{
             for(int j=0; j < numColumns; j++){
                 Document dbObject = row.get(j);
                 Cell.CellStatus cellStatus = Cell.CellStatus.valueOf(dbObject.getString("status"));
+                boolean visited = dbObject.getBoolean("visited");
+                boolean hasMine = dbObject.getBoolean("hasMine");
                 Cell cell = new Cell();
                 cell.setStatus(cellStatus);
+                cell.setVisited(visited);
+                cell.setHasMine(hasMine);
                 board[i][j] = cell;
             }
         }
@@ -67,6 +71,8 @@ public class GameMapper implements BaseMapper<Game>{
     }
 
     private BasicDBObject mapCell(Cell cell){
-        return new BasicDBObject("status", cell.getStatus().toString());
+        return new BasicDBObject("status", cell.getStatus().toString())
+                .append("visited", cell.isVisited())
+                .append("hasMine", cell.isHasMine());
     }
 }
