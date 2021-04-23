@@ -23,8 +23,7 @@ public class UserRepositoryImpl extends MongoBaseRepositoryImpl<User> implements
 
     /**
      * Get a user by username
-     * @param username
-     * @return
+
      */
     @Override
     public User findUserByUsername(String username) {

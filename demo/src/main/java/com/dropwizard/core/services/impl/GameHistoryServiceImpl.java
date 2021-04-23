@@ -34,10 +34,6 @@ public class GameHistoryServiceImpl implements GameHistoryService {
 
     /**
      * Create a new game and save it in the users game history
-     * @param userId
-     * @param gameHistoryRequest
-     * @return
-     * @throws Exception
      */
     @Override
     public GameHistory addGameHistory(String userId, GameHistoryAddRequest gameHistoryRequest) throws Exception {
@@ -47,8 +43,10 @@ public class GameHistoryServiceImpl implements GameHistoryService {
         }
 
         Integer numRows = gameHistoryRequest.getNumRows() > Game.MAX_NUM_ROWS? Game.MAX_NUM_ROWS : gameHistoryRequest.getNumRows();
-        Integer numColumns = gameHistoryRequest.getNumRows() > Game.MAX_NUM_COLUMNS? Game.MAX_NUM_COLUMNS : gameHistoryRequest.getNumRows();
-        Integer numMines = gameHistoryRequest.getNumMines() > Game.MAX_NUM_ROWS? Game.MAX_NUM_ROWS : gameHistoryRequest.getNumRows();
+        Integer numColumns = gameHistoryRequest.getNumRows() > Game.MAX_NUM_COLUMNS? Game.MAX_NUM_COLUMNS : gameHistoryRequest.getNumColumns();
+        Integer totalCells = numRows * numColumns;
+        Integer numMines = gameHistoryRequest.getNumMines() > Game.MAX_NUM_ROWS? Game.MAX_NUM_ROWS : gameHistoryRequest.getNumMines();
+        numMines = gameHistoryRequest.getNumMines() > totalCells? totalCells : gameHistoryRequest.getNumMines();
         Integer numFlags = calculateFlagNumber();
 
         Game game = gameService.generateGame(numRows, numColumns, numMines, numFlags);
@@ -95,9 +93,6 @@ public class GameHistoryServiceImpl implements GameHistoryService {
 
     /**
      * Make a move in the game
-     * @param gameHistoryId
-     * @param request
-     * @return
      */
     @Override
     public GameHistory makeGameMove(String gameHistoryId, GameMoveRequest request) {
@@ -105,6 +100,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
         if(gameHistory != null && request != null){
             Game game = gameHistory.getGame();
             gameService.makeMove(game,request);
+            game.setTimer(request.getTimer());
             gameHistory.setGame(game);
             gameHistory = gameHistoryRepository.update(gameHistory.getId(), gameHistory);
         }

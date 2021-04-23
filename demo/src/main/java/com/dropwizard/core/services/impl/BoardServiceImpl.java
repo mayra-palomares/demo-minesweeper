@@ -16,10 +16,6 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * Create a new board with the parameters selected by the user
-     * @param numRows
-     * @param numColumns
-     * @param numMines
-     * @return
      */
     @Override
     public Cell[][] generateBoard(Integer numRows, Integer numColumns, Integer numMines) {
@@ -76,11 +72,6 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * Update the calculation of neighbors mines around the cell where a mine is put.
-     * @param board
-     * @param numRows
-     * @param numColumns
-     * @param rowIndex
-     * @param columnIndex
      */
     private void updateNeighborsMinesCount(Cell[][] board, int numRows, int numColumns, int rowIndex, int columnIndex) {
         for (int rowOffset = -1; rowOffset < 2; rowOffset++)
@@ -95,53 +86,59 @@ public class BoardServiceImpl implements BoardService {
 
     /**
      * Choose a cell and validate if we try to put a flag, remove a flag or show its content.
-     * @param board
-     * @param numRows
-     * @param numColumns
-     * @param moveRequest
-     * @return
      */
-    public Game.GameStatus makeMove(Cell[][] board, int numRows, int numColumns, GameMoveRequest moveRequest) {
+    public void makeMove(Game game, GameMoveRequest moveRequest) {
         Game.GameStatus gameStatus = Game.GameStatus.IN_PROGRESS;
         int rowIndex = moveRequest.getRowIndex();
         int columnIndex = moveRequest.getColumnIndex();
+        int numFlags = game.getNumFlags();
+        int numRows = game.getNumRows();
+        int numColumns = game.getNumColumns();
+        Cell[][] board = game.getBoard();
 
-        switch(moveRequest.getMove()) {
-            case PUT_FLAG:
-                putFlagInBoard(board, rowIndex, columnIndex);
-                break;
-            case REMOVE_FLAG:
-                removeFlagInBoard(board, rowIndex, columnIndex);
-                break;
-            case VISIT:
-                gameStatus = visitCell(board, numRows, numColumns, rowIndex, columnIndex);
-                break;
+        if(isValidCell(numRows, numColumns, rowIndex, columnIndex)){
+            switch(moveRequest.getMove()) {
+                case PUT_FLAG:
+                    numFlags = putFlagInBoard(board, rowIndex, columnIndex, numFlags);
+                    break;
+                case REMOVE_FLAG:
+                    numFlags = removeFlagInBoard(board, rowIndex, columnIndex, numFlags);
+                    break;
+                case VISIT:
+                    gameStatus = visitCell(board, numRows, numColumns, rowIndex, columnIndex);
+                    break;
+            }
+
+            game.setStatus(gameStatus);
+            game.setNumFlags(numFlags);
+            game.setBoard(board);
         }
-        return gameStatus;
     }
 
-    private void putFlagInBoard(Cell[][] board, int rowIndex, int columnIndex) {
+    private int putFlagInBoard(Cell[][] board, int rowIndex, int columnIndex, int numFlags) {
         Cell cell = board[rowIndex][columnIndex];
-        cell.setStatus(Cell.CellStatus.RED_FLAG);
-        cell.setVisited(true);
-        board[rowIndex][columnIndex] = cell;
+        if(cell.getStatus().equals(Cell.CellStatus.EMPTY)){
+            cell.setStatus(Cell.CellStatus.RED_FLAG);
+            cell.setVisited(true);
+            board[rowIndex][columnIndex] = cell;
+            numFlags--;
+        }
+        return numFlags;
     }
 
-    private void removeFlagInBoard(Cell[][] board, int rowIndex, int columnIndex) {
+    private int removeFlagInBoard(Cell[][] board, int rowIndex, int columnIndex, int numFlags) {
         Cell cell = board[rowIndex][columnIndex];
-        cell.setStatus(Cell.CellStatus.EMPTY);
-        cell.setVisited(false);
-        board[rowIndex][columnIndex] = cell;
+        if(cell.getStatus().equals(Cell.CellStatus.RED_FLAG)){
+            cell.setStatus(Cell.CellStatus.EMPTY);
+            cell.setVisited(false);
+            board[rowIndex][columnIndex] = cell;
+            numFlags++;
+        }
+        return numFlags;
     }
 
     /**
      * Visit a cell and show its content. If there is a mine, the use lost the game.
-     * @param board
-     * @param numRows
-     * @param numColumns
-     * @param rowIndex
-     * @param columnIndex
-     * @return
      */
     private Game.GameStatus visitCell(Cell[][] board, int numRows, int numColumns, int rowIndex, int columnIndex) {
         Game.GameStatus gameStatus = Game.GameStatus.IN_PROGRESS;
@@ -153,44 +150,58 @@ public class BoardServiceImpl implements BoardService {
                 board[rowIndex][columnIndex] = cell;
                 gameStatus = Game.GameStatus.FAIL;
             }else {
-                cell.setStatus(Cell.CellStatus.VISITED);
-                cell.setVisited(true);
-                board[rowIndex][columnIndex] = cell;
+                gameStatus = visitEmptyCell(board, numRows, numColumns, rowIndex, columnIndex);
+            }
+        }
+        return gameStatus;
+    }
 
-                visitNeighbors(board, numRows, numColumns, rowIndex, columnIndex);
+    private Game.GameStatus visitEmptyCell(Cell[][] board, int numRows, int numColumns, int rowIndex, int columnIndex) {
+        Cell cell = board[rowIndex][columnIndex];
+        Game.GameStatus gameStatus = Game.GameStatus.IN_PROGRESS;
+        if(!cell.isVisited() && !cell.isHasMine()) {
+            //Visit cell
+            cell.setStatus(Cell.CellStatus.VISITED);
+            cell.setVisited(true);
+            board[rowIndex][columnIndex] = cell;
 
-                if(isGameCompleted(board, numRows, numColumns)){
-                    gameStatus = Game.GameStatus.COMPLETED;
-                }
+            if (isGameCompleted(board, numRows, numColumns)) {
+                gameStatus = Game.GameStatus.COMPLETED;
+            }else{
+                gameStatus = visitNeighbors(board, numRows, numColumns, rowIndex, columnIndex);
             }
         }
         return gameStatus;
     }
 
     /**
-     * TODO: Visit neighbors cells which do not have mines
-     * @param board
-     * @param numRows
-     * @param numColumns
-     * @param rowIndex
-     * @param columnIndex
+     * Visit neighbors cells which do not have mines
      */
-    private void visitNeighbors(Cell[][] board, int numRows, int numColumns, int rowIndex, int columnIndex) {
-
+    private Game.GameStatus visitNeighbors(Cell[][] board, int numRows, int numColumns, int rowIndex, int columnIndex) {
+        Game.GameStatus gameStatus = Game.GameStatus.IN_PROGRESS;
+        for (int rowOffset = -1; rowOffset < 2; rowOffset++)
+            for (int colOffset = -1; colOffset < 2; colOffset++)
+                if (rowOffset != 0 && colOffset != 0) // Skip cell
+                    if (isValidCell(numRows, numColumns, rowIndex + rowOffset, columnIndex + colOffset)) {
+                        Cell cell = board[rowIndex + rowOffset][columnIndex + colOffset];
+                        if(!cell.isVisited() && !cell.isHasMine()){
+                            gameStatus = visitEmptyCell(board, numRows, numColumns, rowIndex + rowOffset, columnIndex + colOffset);
+                            if(gameStatus.equals(Game.GameStatus.COMPLETED)){
+                                return Game.GameStatus.COMPLETED;
+                            }
+                        }
+                    }
+        return gameStatus;
     }
 
     /**
      * Validate if the user won the game
-     * @param board
-     * @param numRows
-     * @param numColumns
-     * @return
      */
     private boolean isGameCompleted(Cell[][] board, int numRows, int numColumns) {
         for(int i=0; i < numRows; i++){
             for(int j=0; j < numColumns; j++){
                 Cell cell = board[i][j];
-                if(!cell.isVisited()) {
+                if(!cell.isVisited() && !cell.isHasMine()) {
                     return false;
                 }
             }

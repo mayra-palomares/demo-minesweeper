@@ -33,7 +33,6 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void makeMove(Game game, GameMoveRequest request) {
-        Game.GameStatus gameStatus = boardService.makeMove(game.getBoard(), game.getNumRows(), game.getNumColumns(), request);
-        game.setStatus(gameStatus);
+        boardService.makeMove(game, request);
     }
 }

@@ -8,5 +8,5 @@ public interface BoardService {
 
     Cell[][] generateBoard(Integer numRows, Integer numColumns, Integer numMines);
 
-    Game.GameStatus makeMove(Cell[][] board, int numRows, int numColumns, GameMoveRequest moveRequest);
+    void makeMove(Game game, GameMoveRequest moveRequest);
 }

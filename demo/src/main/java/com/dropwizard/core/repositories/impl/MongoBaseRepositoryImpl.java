@@ -26,7 +26,6 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
 
     /**
      * List all the non deleted entities of the collection
-     * @return
      */
     @Override
     public List<T> list() {
@@ -47,8 +46,6 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
 
     /**
      * Get an entity by id
-     * @param entityId
-     * @return
      */
     @Override
     public T getById(String entityId) {
@@ -59,8 +56,6 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
 
     /**
      * Save a new entity.
-     * @param entity
-     * @return
      */
     @Override
     public T save(T entity) {
@@ -71,9 +66,6 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
 
     /**
      * Update an existing entity
-     * @param entityId
-     * @param entity
-     * @return
      */
     @Override
     public T update(String entityId, T entity) {
@@ -90,7 +82,6 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
 
     /**
      * Remove an entity
-     * @param entityId
      */
     @Override
     public void removeById(String entityId) {
