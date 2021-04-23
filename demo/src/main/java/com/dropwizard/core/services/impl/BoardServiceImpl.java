@@ -5,7 +5,10 @@ import com.dropwizard.core.models.Cell;
 import com.dropwizard.core.models.Game;
 import com.dropwizard.core.services.BoardService;
 import com.google.inject.Inject;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class BoardServiceImpl implements BoardService {
@@ -179,18 +182,28 @@ public class BoardServiceImpl implements BoardService {
      */
     private Game.GameStatus visitNeighbors(Cell[][] board, int numRows, int numColumns, int rowIndex, int columnIndex) {
         Game.GameStatus gameStatus = Game.GameStatus.IN_PROGRESS;
-        for (int rowOffset = -1; rowOffset < 2; rowOffset++)
-            for (int colOffset = -1; colOffset < 2; colOffset++)
-                if (rowOffset != 0 && colOffset != 0) // Skip cell
-                    if (isValidCell(numRows, numColumns, rowIndex + rowOffset, columnIndex + colOffset)) {
-                        Cell cell = board[rowIndex + rowOffset][columnIndex + colOffset];
-                        if(!cell.isVisited() && !cell.isHasMine()){
-                            gameStatus = visitEmptyCell(board, numRows, numColumns, rowIndex + rowOffset, columnIndex + colOffset);
-                            if(gameStatus.equals(Game.GameStatus.COMPLETED)){
-                                return Game.GameStatus.COMPLETED;
-                            }
-                        }
-                    }
+        List<Pair<Integer,Integer>> offsetList = new ArrayList<>();
+
+        // row-1, col
+        offsetList.add(new Pair<Integer,Integer>(-1,0));
+        // row+1, col
+        offsetList.add(new Pair<Integer,Integer>(1,0));
+        // row, col-1
+        offsetList.add(new Pair<Integer,Integer>(0,-1));
+        // row, col+1
+        offsetList.add(new Pair<Integer,Integer>(0,1));
+
+        for(Pair<Integer,Integer> offset : offsetList){
+            int rowOffset = offset.getKey();
+            int colOffset = offset.getValue();
+            if (isValidCell(numRows, numColumns, rowIndex + rowOffset, columnIndex + colOffset)) {
+                gameStatus = visitEmptyCell(board, numRows, numColumns, rowIndex + rowOffset, columnIndex + colOffset);
+                if (gameStatus.equals(Game.GameStatus.COMPLETED)) {
+                    return Game.GameStatus.COMPLETED;
+                }
+            }
+        }
+
         return gameStatus;
     }
 
