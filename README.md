@@ -12,7 +12,7 @@ RESTful API developed with Java framework Dropwizard.
 
 ## Demo
 The API was deployed on Heroku:
-    https://minesweeper-mpalomares.herokuapp.com/swagger
+    https://minesweeper-api-mpalomares.herokuapp.com/swagger
 
 ## Next steps
 * Improve algorithm for Minesweeper

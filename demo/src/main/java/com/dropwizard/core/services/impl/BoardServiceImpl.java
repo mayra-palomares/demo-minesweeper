@@ -5,11 +5,9 @@ import com.dropwizard.core.models.Cell;
 import com.dropwizard.core.models.Game;
 import com.dropwizard.core.services.BoardService;
 import com.google.inject.Inject;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class BoardServiceImpl implements BoardService {
 
@@ -185,13 +183,13 @@ public class BoardServiceImpl implements BoardService {
         List<Pair<Integer,Integer>> offsetList = new ArrayList<>();
 
         // row-1, col
-        offsetList.add(new Pair<Integer,Integer>(-1,0));
+        offsetList.add(Pair.of(-1,0));
         // row+1, col
-        offsetList.add(new Pair<Integer,Integer>(1,0));
+        offsetList.add(Pair.of(1,0));
         // row, col-1
-        offsetList.add(new Pair<Integer,Integer>(0,-1));
+        offsetList.add(Pair.of(0,-1));
         // row, col+1
-        offsetList.add(new Pair<Integer,Integer>(0,1));
+        offsetList.add(Pair.of(0,1));
 
         for(Pair<Integer,Integer> offset : offsetList){
             int rowOffset = offset.getKey();
