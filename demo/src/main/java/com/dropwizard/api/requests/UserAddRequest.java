@@ -1,6 +1,6 @@
 package com.dropwizard.api.requests;
 
-public class UserAddRequest fsdfsfsdfds{ 
+public class UserAddRequest{ 
     private String username;
 
     public String getUsername() {
