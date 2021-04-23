@@ -7,6 +7,7 @@ public class GameHistoryAddRequest {
 
     public Integer getNumRows() {
         return numRows;
+    }
 
     public void setNumRows(Integer numRows) {
         this.numRows = numRows;
