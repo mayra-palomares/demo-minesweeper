@@ -1,6 +1,7 @@
 package com.dropwizard.core.services.impl;
 
 import com.dropwizard.api.requests.GameHistoryAddRequest;
+import com.dropwizard.api.requests.GameMoveRequest;
 import com.dropwizard.core.models.Game;
 import com.dropwizard.core.models.GameHistory;
 import com.dropwizard.core.repositories.GameHistoryRepository;
@@ -27,12 +28,24 @@ public class GameHistoryServiceImpl implements GameHistoryService {
     }
 
     @Override
-    public GameHistory getGameHistoryById(String id) {
-        return gameHistoryRepository.getById(id);
+    public GameHistory getGameHistoryById(String gameHistoryId) {
+        return gameHistoryRepository.getById(gameHistoryId);
     }
 
+    /**
+     * Create a new game and save it in the users game history
+     * @param userId
+     * @param gameHistoryRequest
+     * @return
+     * @throws Exception
+     */
     @Override
-    public GameHistory addGameHistory(GameHistoryAddRequest gameHistoryRequest) {
+    public GameHistory addGameHistory(String userId, GameHistoryAddRequest gameHistoryRequest) throws Exception {
+
+        if(gameHistoryRequest == null){
+            throw new Exception("Error creating a new game");
+        }
+
         Integer numRows = gameHistoryRequest.getNumRows() > Game.MAX_NUM_ROWS? Game.MAX_NUM_ROWS : gameHistoryRequest.getNumRows();
         Integer numColumns = gameHistoryRequest.getNumRows() > Game.MAX_NUM_COLUMNS? Game.MAX_NUM_COLUMNS : gameHistoryRequest.getNumRows();
         Integer numMines = gameHistoryRequest.getNumMines() > Game.MAX_NUM_ROWS? Game.MAX_NUM_ROWS : gameHistoryRequest.getNumRows();
@@ -50,21 +63,51 @@ public class GameHistoryServiceImpl implements GameHistoryService {
         return gameHistoryRepository.save(gameHistory);
     }
 
+    /**
+     * TODO: Calculate flag number with the numRows and numColumns params
+     * @return
+     */
     private Integer calculateFlagNumber() {
-        return 40;
+        return Game.MAX_NUM_FLAGS;
     }
 
+    /**
+     * TODO: Calculate the game number based on the user game history
+     * @return
+     */
     private Integer getNextGameNumber() {
         return 1;
     }
 
     @Override
-    public GameHistory updateGameHistory(String id, GameHistory gameHistory) {
-        return gameHistoryRepository.update(id, gameHistory);
+    public GameHistory updateGameHistory(String userId, String gameHistoryId, GameHistory gameHistory) {
+        GameHistory dbGameHistory = getGameHistoryById(gameHistoryId);
+        if(dbGameHistory != null){
+            gameHistory = gameHistoryRepository.update(gameHistoryId, gameHistory);
+        }
+        return gameHistory;
     }
 
     @Override
-    public void deleteGameHistory(String id) {
-        gameHistoryRepository.removeById(id);
+    public void deleteGameHistory(String userId, String gameHistoryId) {
+        gameHistoryRepository.removeById(gameHistoryId);
+    }
+
+    /**
+     * Make a move in the game
+     * @param gameHistoryId
+     * @param request
+     * @return
+     */
+    @Override
+    public GameHistory makeGameMove(String gameHistoryId, GameMoveRequest request) {
+        GameHistory gameHistory = getGameHistoryById(gameHistoryId);
+        if(gameHistory != null && request != null){
+            Game game = gameHistory.getGame();
+            gameService.makeMove(game,request);
+            gameHistory.setGame(game);
+            gameHistory = gameHistoryRepository.update(gameHistory.getId(), gameHistory);
+        }
+        return gameHistory;
     }
 }

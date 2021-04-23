@@ -24,6 +24,10 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
         this.mapper = mapper;
     }
 
+    /**
+     * List all the non deleted entities of the collection
+     * @return
+     */
     @Override
     public List<T> list() {
         Document query = new Document("deleted", false);
@@ -41,6 +45,11 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
         return entities;
     }
 
+    /**
+     * Get an entity by id
+     * @param entityId
+     * @return
+     */
     @Override
     public T getById(String entityId) {
         Document query = new Document("_id", new ObjectId(entityId));
@@ -48,6 +57,11 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
         return document.isPresent() ? mapper.map(document.get()) : null;
     }
 
+    /**
+     * Save a new entity.
+     * @param entity
+     * @return
+     */
     @Override
     public T save(T entity) {
         Document newDocument = mapper.map(entity);
@@ -55,6 +69,12 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
         return getDocument(newDocument);
     }
 
+    /**
+     * Update an existing entity
+     * @param entityId
+     * @param entity
+     * @return
+     */
     @Override
     public T update(String entityId, T entity) {
         Document updatedDocument = mapper.map(entity);
@@ -68,6 +88,10 @@ public class MongoBaseRepositoryImpl<T extends BaseModel> implements BaseReposit
         return documentFind.isPresent() ? mapper.map(documentFind.get()) : null;
     }
 
+    /**
+     * Remove an entity
+     * @param entityId
+     */
     @Override
     public void removeById(String entityId) {
         T entity = getById(entityId);

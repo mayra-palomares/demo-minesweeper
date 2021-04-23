@@ -1,5 +1,6 @@
 package com.dropwizard.core.services.impl;
 
+import com.dropwizard.api.requests.GameMoveRequest;
 import com.dropwizard.core.models.Cell;
 import com.dropwizard.core.models.Game;
 import com.dropwizard.core.services.BoardService;
@@ -28,5 +29,11 @@ public class GameServiceImpl implements GameService {
         game.setNumFlags(numFlags);
         game.setBoard(board);
         return game;
+    }
+
+    @Override
+    public void makeMove(Game game, GameMoveRequest request) {
+        Game.GameStatus gameStatus = boardService.makeMove(game.getBoard(), game.getNumRows(), game.getNumColumns(), request);
+        game.setStatus(gameStatus);
     }
 }

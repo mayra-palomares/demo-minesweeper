@@ -1,6 +1,7 @@
 package com.dropwizard.resources;
 
 import com.dropwizard.api.requests.GameHistoryAddRequest;
+import com.dropwizard.api.requests.GameMoveRequest;
 import com.dropwizard.core.models.GameHistory;
 import com.dropwizard.core.services.GameHistoryService;
 import io.swagger.annotations.Api;
@@ -30,24 +31,31 @@ public class GameHistoryResource {
 
     @GET
     @Path("/{userId}/game/{id}")
-    public GameHistory getGameHistory(@PathParam("userId") String userId,@PathParam("id") String id) {
-        return gameHistoryService.getGameHistoryById(id);
+    public GameHistory getGameHistoryById(@PathParam("userId") String userId,@PathParam("id") String gameHistoryId) {
+        return gameHistoryService.getGameHistoryById(gameHistoryId);
     }
 
     @POST
-    public GameHistory addGameHistory(GameHistoryAddRequest gameHistoryRequest) {
-        return gameHistoryService.addGameHistory(gameHistoryRequest);
+    @Path("/{userId}/game")
+    public GameHistory addGameHistory(@PathParam("userId") String userId, GameHistoryAddRequest gameHistoryRequest) throws Exception {
+        return gameHistoryService.addGameHistory(userId, gameHistoryRequest);
     }
 
     @PUT
     @Path("/{userId}/game/{id}")
-    public GameHistory updateGameHistory(@PathParam("userId") String userId,@PathParam("id") String id, GameHistory gameHistory) {
-        return gameHistoryService.updateGameHistory(id, gameHistory);
+    public GameHistory updateGameHistory(@PathParam("userId") String userId,@PathParam("id") String gameHistoryId, GameHistory gameHistory) {
+        return gameHistoryService.updateGameHistory(userId, gameHistoryId, gameHistory);
     }
 
     @DELETE
     @Path("/{userId}/game/{id}")
-    public void deleteGameHistory(@PathParam("userId") String userId, @PathParam("id") String id) {
-        gameHistoryService.deleteGameHistory(id);
+    public void deleteGameHistory(@PathParam("userId") String userId, @PathParam("id") String gameHistoryId) {
+        gameHistoryService.deleteGameHistory(userId, gameHistoryId);
+    }
+
+    @POST
+    @Path("/{userId}/game/{id}")
+    public GameHistory makeMove(@PathParam("userId") String userId, @PathParam("id") String gameHistoryId, GameMoveRequest request) {
+        return gameHistoryService.makeGameMove(gameHistoryId, request);
     }
 }

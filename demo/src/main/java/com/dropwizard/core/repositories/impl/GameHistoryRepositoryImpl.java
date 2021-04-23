@@ -24,6 +24,11 @@ public class GameHistoryRepositoryImpl extends MongoBaseRepositoryImpl<GameHisto
         this.gameHistoryMapper = gameHistoryMapper;
     }
 
+    /**
+     * Get the list of the game history which belong to the user and have status IN PROGRESS.
+     * @param userId
+     * @return
+     */
     @Override
     public List<GameHistory> getInProgressGameHistoryByUserId(String userId) {
         Document query = new Document("userId", userId)
