@@ -1,10 +1,10 @@
 package com.dropwizard.core.models;
 
 public class Game {
-    public final static Integer MAX_NUM_ROWS = 100;
-    public final static Integer MAX_NUM_COLUMNS = 100;
-    public final static Integer MAX_NUM_FLAGS = 40;
-    public final static Integer MAX_NUM_MINES = 100;
+    public final static Integer MAX_NUM_ROWS = 10;
+    public final static Integer MAX_NUM_COLUMNS = 10;
+    public final static Integer MAX_NUM_FLAGS = 20;
+    public final static Integer MAX_NUM_MINES = 20;
 
     public Integer getNumFlags() {
         return numFlags;

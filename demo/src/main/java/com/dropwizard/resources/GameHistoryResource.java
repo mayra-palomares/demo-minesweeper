@@ -54,7 +54,7 @@ public class GameHistoryResource {
     }
 
     @POST
-    @Path("/{userId}/game/{id}")
+    @Path("/{userId}/game/{id}/move")
     public GameHistory makeMove(@PathParam("userId") String userId, @PathParam("id") String gameHistoryId, GameMoveRequest request) {
         return gameHistoryService.makeGameMove(gameHistoryId, request);
     }

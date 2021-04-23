@@ -24,9 +24,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Cell[][] generateBoard(Integer numRows, Integer numColumns, Integer numMines) {
         Cell[][] board = initBoard(numRows, numColumns);
-        printBoard(board, numRows, numColumns);
         populateWithMines(board, numRows, numColumns, numMines);
-        printBoard(board, numRows, numColumns);
         return board;
     }
 
@@ -63,7 +61,6 @@ public class BoardServiceImpl implements BoardService {
                 mines++;
             }
         }
-        printBoard(board, numRows, numColumns);
     }
 
     private void putMineInBoard(Cell[][] board, int numRows, int numColumns, int rowIndex, int columnIndex) {

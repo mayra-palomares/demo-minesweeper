@@ -56,7 +56,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
 
         GameHistory gameHistory = new GameHistory();
         gameHistory.prepare();
-        gameHistory.setUserId(gameHistoryRequest.getUserId());
+        gameHistory.setUserId(userId);
         gameHistory.setGame(game);
         gameHistory.setGameNumber(gameNumber);
 
