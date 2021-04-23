@@ -30,8 +30,8 @@ public class UserResource {
 
     @GET
     @Path("/{userId}")
-    public User getUser(@PathParam("userId") String id) {
-        return userService.getUserById(id);
+    public User getUser(@PathParam("userId") String userId) {
+        return userService.getUserById(userId);
     }
 
     @POST
@@ -41,13 +41,19 @@ public class UserResource {
 
     @PUT
     @Path("/{userId}")
-    public User updateUser(@PathParam("userId") String id, User user) {
-        return userService.updateUser(id, user);
+    public User updateUser(@PathParam("userId") String userId, User user) {
+        return userService.updateUser(userId, user);
     }
 
     @DELETE
     @Path("/{userId}")
-    public void deleteUser(@PathParam("userId") String id) {
-        userService.deleteUser(id);
+    public void deleteUser(@PathParam("userId") String userId) {
+        userService.deleteUser(userId);
+    }
+
+    @POST
+    @Path("/enterUser")
+    public User enterUser(@Valid UserAddRequest user) throws Exception {
+        return userService.enterUser(user);
     }
 }
